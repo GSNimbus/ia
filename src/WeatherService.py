@@ -28,6 +28,31 @@ def estimate_solar_conditions(cidade, estado):
     data = response.json()
     return data
 
+def get_neighborhoods_by_location(lat, log):
+    """Obtém os bairros próximos a uma localização utilizando a API Nominatim."""
+    url = 'https://nominatim.openstreetmap.org/reverse'
+    params = {
+        "lat": lat,
+        "lon": log,
+        "format": "jsonv2",
+        "addressdetails": 1,
+        "extratags": 1
+    }
+    headers = {
+        "User-Agent": "nimbus-ai/1.0 gustavodiasdsc@gmail.com"
+    }
+    logger.info(f"Request para Nominatim com params={params} e headers={headers}")
+    response = requests.get(url, params=params, headers=headers)
+
+    if response.status_code != 200:
+        logger.error(f"Erro {response.status_code} na API de geolocalização.")
+        return {"error": "Falha no request"}, response.status_code
+
+    response_data = response.json()
+    data = {}
+    data['suburb'] = response_data.get('address', {}).get('suburb', None)
+    return data
+
 def latLotCidade(nomeCidade, estado):
     """Obtém a latitude e longitude de uma cidade utilizando a API Open-Meteo."""
     def remover_acentos_inner(texto):
