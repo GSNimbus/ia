@@ -7,25 +7,25 @@ CORS(app)
 
 @app.route('/solar-conditions', methods=['GET'])
 def get_solar_conditions_by_city():
-    cidade = 'São Paulo'  # Default city
-    estado = 'São Paulo'
+    lat = request.args.get('lat', type=float, default=-23.510411)  
+    log = request.args.get('log', type=float, default=-46.527280)  
 
-    if not cidade or not estado:
+    if not lat or not log:
         return jsonify({"error": "Parâmetros 'cidade' e 'estado' são obrigatórios"}), 400
 
     try:
-        data = estimate_solar_conditions(cidade, estado)
-        return jsonify(data)
+        neighborhoods = get_neighborhoods_by_location(lat, log)
+        logging_info = f"Request para Nominatim com lat={lat}, log={log} e neighborhoods={neighborhoods}"
+        print(logging_info)  # Log the request information
+        data = estimate_solar_conditions(lat, log)
+        return jsonify({"data" : data, 'neighborhoods': neighborhoods})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 @app.route('/neighborhoods', methods=['GET'])
 def get_neighborhoods():
-    # lat = request.args.get('lat')
-    # log = request.args.get('log')
-    #-23.510411, -46.527280
-    lat = -23.510411
-    log = -46.527280
+    lat = request.args.get('lat', type=float, default=-23.510411)  
+    log = request.args.get('log', type=float, default=-46.527280)  
 
     if not lat or not log:
         return jsonify({"error": "Parâmetros 'lat' e 'log' são obrigatórios"}), 400
@@ -38,5 +38,5 @@ def get_neighborhoods():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
 

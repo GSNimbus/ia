@@ -7,18 +7,16 @@ import pandas as pd
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def estimate_solar_conditions(cidade, estado):
-    resposta = latLotCidade(nomeCidade=cidade, estado=estado)
+def estimate_solar_conditions(lat, log):
+    resposta = get_neighborhoods_by_location(lat, log)
 
-    latitude = resposta.get('latitude')
-    longitude = resposta.get('longitude')
     url = "https://api.open-meteo.com/v1/forecast"
     today = datetime.date.today()
     start_date = (today - datetime.timedelta(days=1)).strftime("%Y-%m-%d")  # Incluir o dia anterior
     end_date = today.strftime("%Y-%m-%d")
     params = {
-        "latitude": latitude,
-        "longitude": longitude,
+        "latitude": lat,
+        "longitude": log,
         "hourly": ["temperature_2m", "shortwave_radiation"],
         "timezone": "America/Sao_Paulo",
         "start_date": start_date,
