@@ -1,0 +1,56 @@
+ipmet - desastres - nota 7?
+
+https://www.ipmet.unesp.br/2desastres.php?pg=5851
+
+dados do s2id - nota 9
+
+https://dados.gov.br/dados/conjuntos-dados/s2id_sedec
+
+iag/usp - nota 6.5
+http://www.estacao.iag.usp.br/
+
+
+reportagem g1
+
+https://g1.globo.com/sp/sao-paulo/noticia/2024/05/29/36-das-39-cidades-da-grande-sp-estao-mais-suscetiveis-a-deslizamentos-enxurradas-e-inundacoes-aponta-cemaden.ghtml
+
+
+
+
+
+
+
+como solicitar dados com unesp para pesquisas cientificas e etc:
+
+https://www.ipmet.unesp.br/2solicdados.php
+
+INSTRUÇÕES:
+SOLICITAÇÃO DE DADOS PARA FINS DE PROJETOS DE PESQUISAS
+- Para solicitação de dados meteorológicos a serem utilizados para fins didáticos e projetos de extensão:
+
+1- Download do arquivo (.zip) contendo um evento para o verão e um evento para o inverno.
+Clique aqui para fazer o download de EventoVeraoeInverno.zip
+
+Maiores informações sobre esses eventos entrar em contato com o meteorologista Thiago através do
+e-mail: thiago@ipmet.unesp.br
+
+
+- Para solicitação de dados meteorológicos para fins de projetos de pesquisas efetue os seguintes procedimentos:
+
+1- Leia atentamente as instruções com as informações e opções de dados disponíveis para sua solicitação.
+Clique aqui para informações sobre os formatos de dados de radar meteorológico
+Clique aqui para informações sobre os dados da estação meteorológica do IPMet-Bauru
+
+2- Download do arquivo MS-Word (.doc) contendo o formulário para preenchimento e assinaturas.
+Clique aqui para fazer o download de TermodeCompromisso.doc
+
+3- Leitura e aceite dos termos em que serão solicitados os dados.
+
+4- Preenchimento de todos os campos do "Termo de Compromisso", utilizando o MS-Word.
+
+5- Caso o pedido seja feito pelo aluno, o documento deverá vir assinado também pelo orientador do projeto.
+
+6- Envio do arquivo TermodeCompromisso.doc anexado ao e-mail à Supervisão do IPMet/UNESP, para avaliação preliminar da solicitação. Enviar a solicitação para o e-mail : solicita-dados.ipmet@unesp.br
+
+7- Dados dos radares meteorológicos somente serão cedidos em DBZ e não em taxa de precipitação.
+
