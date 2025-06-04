@@ -1,76 +1,75 @@
-# from flask import Flask, jsonify, request
-# from flask_cors import CORS
-# from WeatherService import estimate_solar_conditions, get_neighborhoods_by_location
-
-# app = Flask(__name__)
-# CORS(app)
-
-# @app.route('/solar-conditions', methods=['GET'])
-# def get_solar_conditions_by_city():
-#     lat = request.args.get('lat', type=float, default=-23.510411)  
-#     log = request.args.get('log', type=float, default=-46.527280)  
-
-#     if not lat or not log:
-#         return jsonify({"error": "Parâmetros 'cidade' e 'estado' são obrigatórios"}), 400
-
-#     try:
-#         neighborhoods = get_neighborhoods_by_location(lat, log)
-#         logging_info = f"Request para Nominatim com lat={lat}, log={log} e neighborhoods={neighborhoods}"
-#         print(logging_info)  # Log the request information
-#         data = estimate_solar_conditions(lat, log)
-#         return jsonify({"data" : data, 'neighborhoods': neighborhoods})
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500
-
-# @app.route('/neighborhoods', methods=['GET'])
-# def get_neighborhoods():
-#     lat = request.args.get('lat', type=float, default=-23.510411)  
-#     log = request.args.get('log', type=float, default=-46.527280)  
-
-#     if not lat or not log:
-#         return jsonify({"error": "Parâmetros 'lat' e 'log' são obrigatórios"}), 400
-
-#     try:
-#         neighborhoods = get_neighborhoods_by_location(lat, log)
-#         return jsonify(neighborhoods)
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500
-
-
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=5000, debug=True)
-
 from flask import Flask, request, jsonify
 import random
+from predictor import predict_precipitation # Importa a nova função
 
 app = Flask(__name__)
 
 # Simulando um Enum de tipo de alerta
-RISCO_ALERTA = ["CHUVA", "VENTO", "CALOR", "FRIO", "UMIDADE"]
+RISCO_ALERTA = ["CHUVA", "VENTO", "CALOR", "FRIO", "UMIDADE"] # Mantenha se ainda for usar para outros riscos
 
 # Endpoint /alerta
 @app.route('/alerta', methods=['POST'])
 def gerar_alerta():
-    previsao = request.get_json()
+    previsao_api_data = request.get_json()
 
-    # Você pode acessar os campos se quiser fazer lógica real:
-    temperatura = previsao.get("temperature2M")
-    precipitacao = previsao.get("precipitation")
-    umidade = previsao.get("relativeHumidity2M")
-    vento = previsao.get("windSpeed10M")
+    if not previsao_api_data:
+        return jsonify({"error": "Request body não pode ser vazio e deve ser JSON"}), 400
 
-    # Gerando dados aleatórios para o alerta
+    # Chama a função de predição do modelo
+    resultado_precipitacao = predict_precipitation(previsao_api_data)
+
+    if "error" in resultado_precipitacao:
+        # Se houve erro na predição, retorna o erro
+        return jsonify(resultado_precipitacao), 400 # Ou 500 dependendo do erro
+
+    precipitacao_prevista = resultado_precipitacao.get("predicted_precipitation")
+
+    # Lógica para determinar o alerta com base na precipitação prevista
+    # Esta é uma lógica de exemplo, ajuste conforme necessário
+    risco_calculado = "CHUVA" # Default para chuva se houver precipitação
+    tipo_alerta_calculado = "BAIXO_RISCO"
+    mensagem_alerta = f"Previsão de precipitação: {precipitacao_prevista:.2f} mm."
+
+    if precipitacao_prevista is None: # Segurança caso algo inesperado ocorra
+        risco_calculado = "INDETERMINADO"
+        tipo_alerta_calculado = "INDETERMINADO"
+        mensagem_alerta = "Não foi possível determinar a precipitação."
+    elif precipitacao_prevista > 10: # Exemplo: mais de 10mm é alto risco
+        tipo_alerta_calculado = "ALTO_RISCO"
+        mensagem_alerta = f"Atenção: Chuva forte prevista ({precipitacao_prevista:.2f} mm)."
+    elif precipitacao_prevista > 5: # Exemplo: mais de 5mm é médio risco
+        tipo_alerta_calculado = "MEDIO_RISCO"
+        mensagem_alerta = f"Atenção: Chuva moderada prevista ({precipitacao_prevista:.2f} mm)."
+    elif precipitacao_prevista > 0: # Qualquer precipitação acima de 0
+        tipo_alerta_calculado = "BAIXO_RISCO"
+        mensagem_alerta = f"Previsão de chuva leve ({precipitacao_prevista:.2f} mm)."
+    else: # Sem precipitação prevista
+        risco_calculado = "SEM_CHUVA" # Ou outro indicador
+        tipo_alerta_calculado = "SEM_RISCO_CHUVA"
+        mensagem_alerta = "Sem previsão de chuva."
+        # Aqui você poderia adicionar lógica para outros tipos de alerta (vento, calor, etc.)
+        # usando os dados de previsao_api_data e random.choice como antes, se desejar.
+
+
+    # Montando o alerta final
     alerta = {
-        "risco": random.choice(RISCO_ALERTA),
-        "tipo": random.choice(["BAIXO_RISCO", "MEDIO_RISCO", "ALTO_RISCO"]),
-        "mensagem": random.choice([
-            "Atenção: chuvas moderadas previstas.",
-            "Ventos fortes podem ocorrer.",
-            "Temperaturas elevadas ao longo do dia.",
-            "Umidade do ar abaixo do ideal."
-        ])
-        # idBairro não incluído, conforme solicitado
+        "risco": risco_calculado,
+        "tipo": tipo_alerta_calculado,
+        "mensagem": mensagem_alerta,
+        "debug_info_precipitacao": resultado_precipitacao # opcional, para depuração
     }
+
+    # Você pode adicionar outros dados aleatórios aqui se ainda precisar deles
+    # para outros tipos de risco não cobertos pelo modelo de precipitação.
+    # Exemplo:
+    # if risco_calculado not in ["CHUVA", "SEM_CHUVA"]:
+    #     alerta["risco"] = random.choice(RISCO_ALERTA) # Escolhe outros riscos
+    #     alerta["tipo"] = random.choice(["BAIXO_RISCO", "MEDIO_RISCO", "ALTO_RISCO"])
+    #     alerta["mensagem"] = random.choice([
+    #         "Ventos fortes podem ocorrer.",
+    #         "Temperaturas elevadas ao longo do dia.",
+    #         "Umidade do ar abaixo do ideal."
+    #     ])
 
     return jsonify(alerta), 200
 
