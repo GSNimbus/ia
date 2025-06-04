@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from predictor import predict_precipitation
 import random
 from predictor import predict_precipitation # Importa a nova função
 
@@ -28,7 +29,8 @@ def gerar_alerta():
     # Esta é uma lógica de exemplo, ajuste conforme necessário
     risco_calculado = "CHUVA" # Default para chuva se houver precipitação
     tipo_alerta_calculado = "BAIXO_RISCO"
-    mensagem_alerta = f"Previsão de precipitação: {precipitacao_prevista:.2f} mm."
+    print(precipitacao_prevista)
+    mensagem_alerta = f"Previsão de precipitação: {precipitacao_prevista[0]:.2f} mm."
 
     if precipitacao_prevista is None: # Segurança caso algo inesperado ocorra
         risco_calculado = "INDETERMINADO"
@@ -40,7 +42,7 @@ def gerar_alerta():
     elif precipitacao_prevista > 5: # Exemplo: mais de 5mm é médio risco
         tipo_alerta_calculado = "MEDIO_RISCO"
         mensagem_alerta = f"Atenção: Chuva moderada prevista ({precipitacao_prevista:.2f} mm)."
-    elif precipitacao_prevista > 0: # Qualquer precipitação acima de 0
+    elif precipitacao_prevista > 3: # Qualquer precipitação acima de 0
         tipo_alerta_calculado = "BAIXO_RISCO"
         mensagem_alerta = f"Previsão de chuva leve ({precipitacao_prevista:.2f} mm)."
     else: # Sem precipitação prevista
@@ -56,7 +58,7 @@ def gerar_alerta():
         "risco": risco_calculado,
         "tipo": tipo_alerta_calculado,
         "mensagem": mensagem_alerta,
-        "debug_info_precipitacao": resultado_precipitacao # opcional, para depuração
+        "debug_info_precipitacao": float(precipitacao_prevista) if precipitacao_prevista is not None else None
     }
 
     # Você pode adicionar outros dados aleatórios aqui se ainda precisar deles

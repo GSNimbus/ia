@@ -33,20 +33,35 @@ def predict_precipitation(api_data: dict):
         dict: Um dicionário com a precipitação prevista ou uma mensagem de erro.
               Ex: {"predicted_precipitation": 0.5} ou {"error": "Mensagem de erro"}
     """
+    
+    
+    model = None
+    try:
+        with open(MODEL_PATH, 'rb') as f:
+            model = pickle.load(f)
+        print(f"Modelo {MODEL_FILENAME} carregado com sucesso de {MODEL_PATH}")
+    except FileNotFoundError:
+        print(f"ERRO CRÍTICO: Arquivo do modelo não encontrado em {MODEL_PATH}. Verifique o caminho e o nome do arquivo.")
+    except Exception as e:
+        print(f"ERRO CRÍTICO: Falha ao carregar o modelo {MODEL_FILENAME} de {MODEL_PATH}. Erro: {e}")
     if model is None:
-        return {"error": "Modelo de previsão não está carregado. Verifique os logs do servidor."}
-
+            return {"error": "Modelo de previsão não está carregado. Verifique os logs do servidor."}
     try:
         # Extrair dados da API
         temperatura = api_data.get("temperature2_m")
         umidade = api_data.get("relative_humidity2_m")
         vento = api_data.get("wind_speed10_m")
+        pressao = api_data.get("surface_pressure") 
+        temperatura_orvalho = api_data.get("apparent_temperature")
+        
 
-        if temperatura is None or umidade is None or vento is None:
+        if temperatura is None or umidade is None or vento is None or pressao is None or temperatura_orvalho is None:
             missing_fields = []
             if temperatura is None: missing_fields.append("temperature2_m")
             if umidade is None: missing_fields.append("relative_humidity2_m")
             if vento is None: missing_fields.append("wind_speed10_m")
+            if pressao is None: missing_fields.append("surface_pressure")
+            if temperatura_orvalho is None: missing_fields.append("apparent_temperature")
             return {"error": f"Dados de entrada incompletos. Campos obrigatórios faltando: {', '.join(missing_fields)}"}
 
         # Criar features de tempo
@@ -58,12 +73,23 @@ def predict_precipitation(api_data: dict):
         # Preparar os dados para o modelo
         # A ordem e os nomes das colunas devem ser EXATAMENTE os mesmos que o modelo espera.
         # Suposição de features e ordem:
-        feature_names = ['temperatura_ar_c', 'umidade_relativa_pct', 'vento_velocidade_ms', 'mes', 'dia_do_ano', 'hora_do_dia']
+        feature_names = [
+            "temperatura_ar_c",
+            "umidade_relativa_pct",
+            "pressao_atm_estacao_mb",
+            "temperatura_orvalho_c",
+            "vento_velocidade_ms",
+            "mes",
+            "dia_do_ano",
+            "hora_do_dia"
+        ]
         
         input_values = [[
             float(temperatura),
             float(umidade),
-            float(vento),
+            float(pressao) ,
+            float(temperatura_orvalho),  
+            float(vento),  
             int(mes),
             int(dia_do_ano),
             int(hora_do_dia)
