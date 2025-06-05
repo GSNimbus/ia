@@ -4,7 +4,7 @@ blinker==1.9.0
 certifi==2025.4.26
 charset-normalizer==3.4.2
 click==8.2.1
-Flask==3.1.1
+flask==3.1.1
 flask-cors==6.0.0
 flatbuffers==25.2.10
 gast==0.6.0
@@ -23,7 +23,8 @@ MarkupSafe==3.0.2
 mdurl==0.1.2
 ml_dtypes==0.5.1
 namex==0.1.0
-numpy==2.1.3
+numpy==1.26.4
+# numpy==2.0.2
 opt_einsum==3.4.0
 optree==0.16.0
 packaging==25.0
@@ -39,8 +40,8 @@ scipy==1.15.3
 six==1.17.0
 tensorboard==2.19.0
 tensorboard-data-server==0.7.2
-tensorflow==2.19.0
-tensorflow-io-gcs-filesystem==0.37.1
+# tensorflow==2.19.0
+# tensorflow-io-gcs-filesystem==0.37.1
 termcolor==3.1.0
 threadpoolctl==3.6.0
 typing_extensions==4.14.0
