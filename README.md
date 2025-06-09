@@ -10,6 +10,8 @@ Além disso, o usuário poderá adicionar grupos de localização, como a casa d
 
 Veja o pdf para a solução no repositório!
 
+Veja o notebook em src/GSNimbus.ipynb
+
 ## Observações
 - Api Flask rodando na porta 5000
 - Usamos docker para rodar, para isso, execute:
