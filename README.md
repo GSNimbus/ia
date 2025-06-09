@@ -12,6 +12,10 @@ Veja o pdf para a solução no repositório!
 
 Veja o notebook em src/GSNimbus.ipynb
 
+## Vídeo
+
+https://youtu.be/0_y8_IiBZbk
+
 ## Observações
 - Api Flask rodando na porta 5000
 - Usamos docker para rodar, para isso, execute:
