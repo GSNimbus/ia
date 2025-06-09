@@ -15,6 +15,7 @@ Além disso, o usuário poderá adicionar grupos de localização, como a casa d
 ```
 docker build -t nimbus-ai .
 ```
+Depois execute: 
 
 ```
 docker run --name nimbus-ai -d -p 5000:5000 --network nimbus-network nimbus-ai
