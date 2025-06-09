@@ -8,6 +8,8 @@ Com base nessa previsão, o sistema envia alertas classificados em três níveis
 
 Além disso, o usuário poderá adicionar grupos de localização, como a casa de familiares, o local de trabalho ou outros pontos de interesse. Dessa forma, ele receberá alertas personalizados para essas regiões também, ajudando na prevenção e no planejamento diante de possíveis enchentes ou outros eventos climáticos extremos.
 
+Veja o pdf para a solução no repositório!
+
 ## Observações
 - Api Flask rodando na porta 5000
 - Usamos docker para rodar, para isso, execute:
